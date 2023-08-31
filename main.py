@@ -2,6 +2,8 @@ from sklearn import datasets
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
 
 iris = datasets.load_iris() #Loading the dataset
 print(iris.keys())
@@ -25,7 +27,7 @@ for i in range(len(iris['target'])):
 
 iris['species'] = species
 
-print(iris.describe())
+# print(iris.describe())
 
 setosa = iris[iris.species == "setosa"]
 versicolor = iris[iris.species=='versicolor']
@@ -45,5 +47,18 @@ ax.set_ylabel("petal width (cm)")
 ax.grid()
 ax.set_title("Iris petals")
 ax.legend()
+# plt.show()
 
-plt.show()
+
+# Droping the target and species since we only need the measurements
+X = iris.drop(['target','species'], axis=1) # axis: 0 = 'index', 1 = columns
+
+# converting into numpy array and assigning petal length and petal width
+X = X.to_numpy()[:, (2,3)]
+y = iris['target']
+
+# Splitting into train and test
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.5, random_state=42)
+
+log_reg = LogisticRegression()
+log_reg.fit(X_train,y_train)
